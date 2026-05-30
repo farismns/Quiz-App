@@ -10,50 +10,77 @@ export default function QuestionCard({
 }) {
   const [selected, setSelected] = useState(null);
   const [locked, setLocked] = useState(false);
+  const [transitioning, setTransitioning] = useState(false);
 
   const handleSelect = (index) => {
     if (locked) return;
+
     setSelected(index);
     setLocked(true);
-    setTimeout(() => onAnswer(index), 1500);
+
+    setTimeout(() => {
+      setTransitioning(true);
+    }, 700);
+
+    setTimeout(() => {
+      onAnswer(index);
+    }, 1200);
   };
 
   const handleTimeout = useCallback(() => {
     if (locked) return;
+
     setLocked(true);
-    onTimeout();
+    setTransitioning(true);
+
+    setTimeout(() => {
+      onTimeout();
+    }, 700);
   }, [locked, onTimeout]);
 
   const getButtonClass = (index) => {
     if (!locked) return "option-btn";
-    if (index === question.correctIndex) return "option-btn correct";
-    if (index === selected && selected !== question.correctIndex)
+
+    if (index === question.correctIndex) {
+      return "option-btn correct";
+    }
+
+    if (index === selected && selected !== question.correctIndex) {
       return "option-btn incorrect";
+    }
+
     return "option-btn dimmed";
   };
 
   const getButtonLabel = (index) => {
     if (!locked) return null;
-    if (index === question.correctIndex)
+
+    if (index === question.correctIndex) {
       return <span className="option-tag correct-tag">✓ Correct</span>;
-    if (index === selected)
+    }
+
+    if (index === selected) {
       return <span className="option-tag incorrect-tag">✗ Wrong</span>;
+    }
+
     return null;
   };
 
   return (
     <div className="screen">
-      <div className="question-card">
+      <div className={`question-card ${transitioning ? "slide-next" : ""}`}>
         <div className="card-header">
           <div className="progress-wrap">
             <div className="progress-info">
               <span className="q-counter">
                 Question {questionNumber} of {totalQuestions}
               </span>
+
               <span className="q-pct">
                 {Math.round(((questionNumber - 1) / totalQuestions) * 100)}%
               </span>
             </div>
+
             <div className="progress-bar">
               <div
                 className="progress-fill"
@@ -63,6 +90,7 @@ export default function QuestionCard({
               />
             </div>
           </div>
+
           <Timer key={question.id} onTimeout={handleTimeout} />
         </div>
 
@@ -79,14 +107,18 @@ export default function QuestionCard({
               <span className="option-letter">
                 {String.fromCharCode(65 + index)}
               </span>
+
               <span className="option-text">{option}</span>
+
               {getButtonLabel(index)}
             </button>
           ))}
         </div>
 
         {locked && selected === null && (
-          <p className="timeout-msg">⏰ Time's up! Moving to next question…</p>
+          <p className="timeout-msg">
+            ⏰ Time's up! Moving to next question...
+          </p>
         )}
       </div>
     </div>

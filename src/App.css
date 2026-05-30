@@ -198,6 +198,36 @@ body {
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 2rem;
+
+  animation: cardEnter 0.35s ease;
+}
+
+.slide-next {
+  animation: slideNext 0.45s ease forwards;
+}
+
+@keyframes slideNext {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+}
+
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .card-header {
@@ -329,11 +359,14 @@ body {
 .option-btn.correct {
   background: var(--correct-soft);
   border-color: var(--correct);
+  animation: pulseCorrect 0.5s ease;
 }
 .option-btn.incorrect {
   background: var(--incorrect-soft);
   border-color: var(--incorrect);
+  animation: shakeWrong 0.4s ease;
 }
+
 .option-btn.dimmed {
   opacity: 0.4;
 }
@@ -563,6 +596,42 @@ body {
 }
 .btn-restart:active {
   transform: scale(0.99);
+}
+
+@keyframes pulseCorrect {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.03);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes shakeWrong {
+  0% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-6px);
+  }
+
+  50% {
+    transform: translateX(6px);
+  }
+
+  75% {
+    transform: translateX(-4px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
 @media (max-width: 480px) {

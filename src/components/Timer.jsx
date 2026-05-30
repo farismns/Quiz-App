@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const TIMER_SECONDS = 60;
+const TIMER_SECONDS = 30;
 
 export default function Timer({ onTimeout }) {
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
@@ -12,7 +12,7 @@ export default function Timer({ onTimeout }) {
     }
 
     const id = setInterval(() => {
-      setTimeLeft((t) => t - 1);
+      setTimeLeft((prev) => prev - 1);
     }, 1000);
 
     return () => clearInterval(id);
@@ -24,12 +24,13 @@ export default function Timer({ onTimeout }) {
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (pct / 100) * circumference;
 
-  const color =
-    timeLeft > 30
-      ? "var(--correct)"
-      : timeLeft > 10
-        ? "var(--warning)"
-        : "var(--incorrect)";
+  let color = "var(--correct)";
+
+  if (timeLeft <= 10) {
+    color = "var(--incorrect)";
+  } else if (timeLeft <= 20) {
+    color = "var(--warning)";
+  }
 
   return (
     <div className="timer-wrap">
@@ -55,15 +56,14 @@ export default function Timer({ onTimeout }) {
           strokeLinecap="round"
           transform="rotate(-90 60 60)"
           style={{
-            transition: "stroke-dashoffset 1s linear, stroke 0.3s ease",
+            transition: "stroke-dashoffset 1s linear, stroke 0.4s ease",
           }}
         />
       </svg>
 
       <div className="timer-content">
         <span className="timer-number">{timeLeft}</span>
-
-        <span className="timer-total">/{TIMER_SECONDS}</span>
+        <span className="timer-total">/30</span>
       </div>
     </div>
   );

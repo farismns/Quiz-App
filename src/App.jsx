@@ -75,7 +75,12 @@ export default function App() {
     <div className="app">
       <div className="app-bg" />
       {phase === "start" && (
-        <StartScreen totalQuestions={questions.length} onStart={handleStart} />
+        <StartScreen
+          totalQuestions={questions.length}
+          poolSize={questions.length}
+          quizLength={QUIZ_LENGTH}
+          onStart={handleStart}
+        />
       )}
       {phase === "quiz" && (
         <QuestionCard
