@@ -1,6 +1,4 @@
-import questions from "../data/questions";
-
-export default function ResultScreen({ answers, onRestart }) {
+export default function ResultScreen({ answers, onRestart, questions }) {
   const correct = answers.filter((a) => a.correct).length;
   const penalties = answers.filter((a) => a.penalty).length;
   const score = correct - penalties;
