@@ -71,7 +71,7 @@ export default function ResultScreen({ answers, onRestart, questions }) {
                     <>
                       {isWrong && (
                         <span className="row-detail wrong-detail">
-                          You chose: {q.options[a.selected]}
+                          Yours: {q.options[a.selected]}
                         </span>
                       )}
                       <span className="row-detail correct-detail">
