@@ -13,6 +13,84 @@
   --incorrect: #ef4444;
   --incorrect-soft: #ef44441a;
   --warning: #f59e0b;
+  --bg-glow-a: #6c63ff18;
+  --bg-glow-b: #22c55e10;
+}
+
+:root[data-theme="light"] {
+  --bg: #f7f6ff;
+  --surface: #ffffff;
+  --surface2: #f4f3ff;
+  --border: #e3e2ff;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --text-dim: #4b5563;
+  --accent: #7c3aed;
+  --accent-soft: #ede9fe;
+  --correct: #16a34a;
+  --correct-soft: #dcfce7;
+  --incorrect: #dc2626;
+  --incorrect-soft: #fee2e2;
+  --warning: #d97706;
+  --bg-glow-a: #c4b5fd33;
+  --bg-glow-b: #facc151a;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f0f13;
+  --surface: #1a1a24;
+  --surface2: #22222f;
+  --border: #2e2e40;
+  --text: #f0f0f8;
+  --text-muted: #8080a0;
+  --text-dim: #50506a;
+  --accent: #6c63ff;
+  --accent-soft: #6c63ff22;
+  --correct: #22c55e;
+  --correct-soft: #22c55e1a;
+  --incorrect: #ef4444;
+  --incorrect-soft: #ef44441a;
+  --warning: #f59e0b;
+  --bg-glow-a: #6c63ff18;
+  --bg-glow-b: #22c55e10;
+}
+
+:root[data-theme="pink"] {
+  --bg: #1f1028;
+  --surface: #2d153b;
+  --surface2: #3f1f53;
+  --border: #5a317b;
+  --text: #fdf2f8;
+  --text-muted: #f5b7d6;
+  --text-dim: #d8b4fe;
+  --accent: #ec4899;
+  --accent-soft: #fbcfe8;
+  --correct: #34d399;
+  --correct-soft: #d1fae5;
+  --incorrect: #f87171;
+  --incorrect-soft: #fee2e2;
+  --warning: #fbbf24;
+  --bg-glow-a: #f472b626;
+  --bg-glow-b: #fb71851a;
+}
+
+:root[data-theme="brown"] {
+  --bg: #2c1f16;
+  --surface: #3c2f24;
+  --surface2: #4b3b30;
+  --border: #6d5747;
+  --text: #f8efe4;
+  --text-muted: #d7c3b4;
+  --text-dim: #a78b71;
+  --accent: #d97706;
+  --accent-soft: #fcd59b;
+  --correct: #86efac;
+  --correct-soft: #dcfce7;
+  --incorrect: #fb7185;
+  --incorrect-soft: #fee2e2;
+  --warning: #fbbf24;
+  --bg-glow-a: #f59e0b26;
+  --bg-glow-b: #a162071a;
 }
 
 * {
@@ -37,12 +115,64 @@ body {
   position: relative;
 }
 
+.theme-switcher {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.6rem 0.85rem;
+  color: var(--text);
+}
+
+.theme-switcher label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.theme-switcher select {
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+}
+
+.theme-switcher select option {
+  color: #111;
+}
+
+@media (max-width: 480px) {
+  .theme-switcher {
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
 .app-bg {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 40% at 20% 20%, #6c63ff18 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 80% 80%, #22c55e10 0%, transparent 60%),
+    radial-gradient(
+      ellipse 60% 40% at 20% 20%,
+      var(--bg-glow-a) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 50% 50% at 80% 80%,
+      var(--bg-glow-b) 0%,
+      transparent 60%
+    ),
     var(--bg);
   z-index: 0;
   pointer-events: none;

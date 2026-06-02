@@ -3,13 +3,16 @@ import StartScreen from "./components/StartsScreen";
 import QuestionCard from "./components/QuestionCard";
 import ResultScreen from "./components/ResultScreen";
 import "./App.css";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function App() {
   const [phase, setPhase] = useState("start");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [shuffled, setShuffled] = useState([]);
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("quizTheme") || "dark",
+  );
   const QUIZ_LENGTH = 10; // number of questions to show per quiz
 
   const shuffle = useCallback((arr) => {
@@ -71,9 +74,27 @@ export default function App() {
     setPhase("quiz");
   }, [sampleQuiz]);
 
+  useEffect(() => {
+    localStorage.setItem("quizTheme", theme);
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
+
   return (
     <div className="app">
       <div className="app-bg" />
+      <div className="theme-switcher">
+        <label htmlFor="theme-select">Theme</label>
+        <select
+          id="theme-select"
+          value={theme}
+          onChange={(e) => setTheme(e.target.value)}
+        >
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="pink">Pink</option>
+          <option value="brown">Brown</option>
+        </select>
+      </div>
       {phase === "start" && (
         <StartScreen
           totalQuestions={questions.length}
