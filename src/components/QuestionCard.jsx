@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import Timer from "./Timer";
 
 export default function QuestionCard({
@@ -7,6 +7,9 @@ export default function QuestionCard({
   totalQuestions,
   onAnswer,
   onTimeout,
+  onPlayCorrectSound,
+  onPlayWrongSound,
+  onPlayTimeoutSound,
 }) {
   const [selected, setSelected] = useState(null);
   const [locked, setLocked] = useState(false);
@@ -18,6 +21,12 @@ export default function QuestionCard({
     setSelected(index);
     setLocked(true);
 
+    if (index === question.correctIndex) {
+      onPlayCorrectSound?.();
+    } else {
+      onPlayWrongSound?.();
+    }
+
     setTimeout(() => {
       setTransitioning(true);
     }, 700);
@@ -27,16 +36,17 @@ export default function QuestionCard({
     }, 1200);
   };
 
-  const handleTimeout = useCallback(() => {
+  const handleTimeout = () => {
     if (locked) return;
 
     setLocked(true);
     setTransitioning(true);
+    onPlayTimeoutSound?.();
 
     setTimeout(() => {
       onTimeout();
     }, 700);
-  }, [locked, onTimeout]);
+  };
 
   const getButtonClass = (index) => {
     if (!locked) return "option-btn";

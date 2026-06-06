@@ -2,17 +2,62 @@ import questions from "./data/questions";
 import StartScreen from "./components/StartsScreen";
 import QuestionCard from "./components/QuestionCard";
 import ResultScreen from "./components/ResultScreen";
+
 import "./App.css";
 import { useCallback, useEffect, useState } from "react";
+import {
+  getHighScore,
+  saveHighScore,
+  getQuizHistory,
+  saveQuizHistory,
+} from "./utils/storage";
+import {
+  getSoundPreference,
+  setSoundPreference,
+  useSoundEffects,
+} from "./utils/sound";
+
+const SOUND_SOURCES = {
+  correct: "/sounds/correct.wav",
+  wrong: "/sounds/wrong.wav",
+  result: "/sounds/result.wav",
+};
 
 export default function App() {
   const [phase, setPhase] = useState("start");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [shuffled, setShuffled] = useState([]);
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem("quizTheme") || "dark",
-  );
+  const [highScore, setHighScore] = useState(() => getHighScore());
+  const [history, setHistory] = useState(() => getQuizHistory());
+  const [soundEnabled, setSoundEnabled] = useState(() => getSoundPreference());
+  const [theme, setTheme] = useState(() => {
+    const stored = localStorage.getItem("quizTheme");
+    const normalized = stored === "sakura" ? "pink" : stored;
+    return ["light", "dark", "ocean", "royal", "pink"].includes(normalized)
+      ? normalized
+      : "dark";
+  });
+
+  const {
+    playCorrectSound,
+    playWrongSound,
+    playResultSound,
+  } = useSoundEffects(soundEnabled, SOUND_SOURCES);
+
+  useEffect(() => {
+    setSoundPreference(soundEnabled);
+  }, [soundEnabled]);
+
+  useEffect(() => {
+    if (phase === "results") {
+      playResultSound?.();
+    }
+  }, [phase, playResultSound]);
+
+  const toggleSoundEnabled = useCallback(() => {
+    setSoundEnabled((enabled) => !enabled);
+  }, []);
   const QUIZ_LENGTH = 10; // number of questions to show per quiz
 
   const shuffle = useCallback((arr) => {
@@ -74,6 +119,32 @@ export default function App() {
     setPhase("quiz");
   }, [sampleQuiz]);
 
+  const handleScoreSave = useCallback(
+    (score, correct, penalties) => {
+      // Update high score if needed
+      if (score > highScore) {
+        saveHighScore(score);
+        setHighScore(score);
+      }
+
+      // Save to quiz history
+      const newEntry = {
+        id: Date.now(),
+        score,
+        correct,
+        penalties,
+        total: shuffled.length,
+        percentage: Math.round((score / shuffled.length) * 100),
+        date: new Date().toLocaleString(),
+      };
+
+      const updatedHistory = [newEntry, ...history].slice(0, 10); // Keep last 10 quizzes
+      saveQuizHistory(updatedHistory);
+      setHistory(updatedHistory);
+    },
+    [highScore, history, shuffled.length],
+  );
+
   useEffect(() => {
     localStorage.setItem("quizTheme", theme);
     document.documentElement.dataset.theme = theme;
@@ -91,9 +162,17 @@ export default function App() {
         >
           <option value="light">Light</option>
           <option value="dark">Dark</option>
+          <option value="ocean">Ocean Blue</option>
+          <option value="royal">Royal Purple</option>
           <option value="pink">Pink</option>
-          <option value="brown">Brown</option>
         </select>
+        <button
+          type="button"
+          className={`sound-toggle ${soundEnabled ? "enabled" : "disabled"}`}
+          onClick={toggleSoundEnabled}
+        >
+          {soundEnabled ? "🔊 Sound On" : "🔇 Sound Off"}
+        </button>
       </div>
       {phase === "start" && (
         <StartScreen
@@ -101,6 +180,8 @@ export default function App() {
           poolSize={questions.length}
           quizLength={QUIZ_LENGTH}
           onStart={handleStart}
+          highScore={highScore}
+          history={history}
         />
       )}
       {phase === "quiz" && (
@@ -111,6 +192,9 @@ export default function App() {
           totalQuestions={shuffled.length}
           onAnswer={handleAnswer}
           onTimeout={handleTimeout}
+          onPlayCorrectSound={playCorrectSound}
+          onPlayWrongSound={playWrongSound}
+          onPlayTimeoutSound={playWrongSound}
         />
       )}
       {phase === "results" && (
@@ -118,6 +202,7 @@ export default function App() {
           answers={answers}
           questions={shuffled}
           onRestart={handleRestart}
+          onScoreSave={handleScoreSave}
         />
       )}
     </div>

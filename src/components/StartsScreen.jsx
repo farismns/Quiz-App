@@ -3,7 +3,10 @@ export default function StartScreen({
   onStart,
   poolSize = totalQuestions,
   quizLength = totalQuestions,
+  highScore = 0,
+  history = [],
 }) {
+  const recentQuizzes = history.slice(0, 3); // Show last 3 quizzes
   return (
     <div className="screen start-screen">
       <div className="start-card">
@@ -25,7 +28,7 @@ export default function StartScreen({
           </div>
           <div className="meta-item">
             <span className="meta-icon">⏱</span>
-            <span className="meta-label">30 sec per question</span>
+            <span className="meta-label">15 sec per question</span>
           </div>
           <div className="meta-item">
             <span className="meta-icon">⚡</span>
@@ -41,7 +44,7 @@ export default function StartScreen({
           <ul className="rules-list">
             <li>Press Start to begin.</li>
             <li>Choose one answer per question.</li>
-            <li>You have 30 seconds for each question.</li>
+            <li>You have 15 seconds for each question.</li>
             <li>Correct answers add 1 point.</li>
             <li>Skipping or timing out subtracts 1 point.</li>
             <li>Review your final score and answers at the end.</li>
@@ -51,6 +54,36 @@ export default function StartScreen({
           Start Quiz <span className="btn-arrow">→</span>
         </button>
       </div>
+
+      {(highScore > 0 || recentQuizzes.length > 0) && (
+        <div className="stats-card">
+          {highScore > 0 && (
+            <div className="stats-section">
+              <h3 className="stats-title">🏆 High Score</h3>
+              <div className="high-score-display">{highScore}</div>
+            </div>
+          )}
+
+          {recentQuizzes.length > 0 && (
+            <div className="stats-section">
+              <h3 className="stats-title">📊 Recent Quizzes</h3>
+              <div className="history-list">
+                {recentQuizzes.map((quiz) => (
+                  <div key={quiz.id} className="history-item">
+                    <div className="history-score">
+                      {quiz.score}/{quiz.total}
+                    </div>
+                    <div className="history-details">
+                      <span className="history-pct">{quiz.percentage}%</span>
+                      <span className="history-date">{quiz.date}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

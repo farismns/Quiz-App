@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const TIMER_SECONDS = 30;
+const TIMER_SECONDS = 15;
 
 export default function Timer({ onTimeout }) {
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
@@ -26,9 +26,9 @@ export default function Timer({ onTimeout }) {
 
   let color = "var(--correct)";
 
-  if (timeLeft <= 10) {
+  if (timeLeft <= 5) {
     color = "var(--incorrect)";
-  } else if (timeLeft <= 20) {
+  } else if (timeLeft <= 10) {
     color = "var(--warning)";
   }
 
@@ -63,7 +63,7 @@ export default function Timer({ onTimeout }) {
 
       <div className="timer-content">
         <span className="timer-number">{timeLeft}</span>
-        <span className="timer-total">/30</span>
+        <span className="timer-total">/15</span>
       </div>
     </div>
   );
