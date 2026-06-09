@@ -68,14 +68,18 @@ export default function StartScreen({
             <div className="stats-section">
               <h3 className="stats-title">📊 Recent Quizzes</h3>
               <div className="history-list">
-                {recentQuizzes.map((quiz) => (
-                  <div key={quiz.id} className="history-item">
+                {recentQuizzes.map((quiz, index) => (
+                  <div key={quiz.id || index} className="history-item">
                     <div className="history-score">
                       {quiz.score}/{quiz.total}
                     </div>
+
                     <div className="history-details">
-                      <span className="history-pct">{quiz.percentage}%</span>
-                      <span className="history-date">{quiz.date}</span>
+                      <span className="history-pct">
+                        {quiz.percentage}% Correct
+                      </span>
+
+                      <span className="history-date">🕒 {quiz.date}</span>
                     </div>
                   </div>
                 ))}

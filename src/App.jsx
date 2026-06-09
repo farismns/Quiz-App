@@ -39,11 +39,10 @@ export default function App() {
       : "dark";
   });
 
-  const {
-    playCorrectSound,
-    playWrongSound,
-    playResultSound,
-  } = useSoundEffects(soundEnabled, SOUND_SOURCES);
+  const { playCorrectSound, playWrongSound, playResultSound } = useSoundEffects(
+    soundEnabled,
+    SOUND_SOURCES,
+  );
 
   useEffect(() => {
     setSoundPreference(soundEnabled);
@@ -202,6 +201,7 @@ export default function App() {
           answers={answers}
           questions={shuffled}
           onRestart={handleRestart}
+          onQuit={() => setPhase("start")}
           onScoreSave={handleScoreSave}
         />
       )}

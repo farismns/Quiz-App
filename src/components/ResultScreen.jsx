@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ResultScreen({
   answers,
   onRestart,
+  onQuit,
   questions,
   onScoreSave,
 }) {
@@ -12,12 +13,16 @@ export default function ResultScreen({
   const total = questions.length;
   const pct = Math.round((score / total) * 100);
 
+  const hasSaved = useRef(false);
+
+  const [showQuitModal, setShowQuitModal] = useState(false);
+
   useEffect(() => {
-    if (onScoreSave) {
+    if (!hasSaved.current && onScoreSave) {
       onScoreSave(score, correct, penalties);
+      hasSaved.current = true;
     }
   }, [onScoreSave, score, correct, penalties]);
-
 
   const grade =
     pct >= 90
@@ -102,10 +107,51 @@ export default function ResultScreen({
           })}
         </div>
 
-        <button className="btn-restart" onClick={onRestart}>
-          Try Again →
-        </button>
+        <div className="result-actions">
+          <button className="btn-quit" onClick={() => setShowQuitModal(true)}>
+            ← Quit
+          </button>
+
+          <button className="btn-restart" onClick={onRestart}>
+            Try Again →
+          </button>
+        </div>
       </div>
+
+      {showQuitModal && (
+        <div className="modal-overlay">
+          <div className="quit-modal">
+            <div className="modal-icon">⚠️</div>
+
+            <h3>Quit Quiz?</h3>
+
+            <p>
+              Your score has already been saved.
+              <br />
+              Do you want to return to the home screen?
+            </p>
+
+            <div className="modal-actions">
+              <button
+                className="modal-cancel"
+                onClick={() => setShowQuitModal(false)}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="modal-confirm"
+                onClick={() => {
+                  setShowQuitModal(false);
+                  onQuit();
+                }}
+              >
+                Yes, Quit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
